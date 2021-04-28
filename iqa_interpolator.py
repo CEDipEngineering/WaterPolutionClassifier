@@ -23,15 +23,15 @@ class IQA_Interpolator():
         self.indicators['Sólido Dissolvido Total'] = pd.read_csv('csv_iqa/residuo.csv', delimiter=',', decimal='.', header=None)
         self.indicators['Oxigênio Dissolvido'] = pd.read_csv('csv_iqa/o2dissolvido.csv', delimiter=',', decimal='.', header=None)
         self.indicatorFunctions = {}
-        self.indicatorFunctions['Coliformes Termotolerantes'] = lambda x: np.interp(x, self.indicators['Coliformes Termotolerantes'][0], self.indicators['Coliformes Termotolerantes'][1])
-        self.indicatorFunctions['pH'] = lambda x: np.interp(x, self.indicators['pH'][0], self.indicators['pH'][1])
-        self.indicatorFunctions['DBO (5, 20)'] = lambda x: np.interp(x, self.indicators['DBO (5, 20)'][0], self.indicators['DBO (5, 20)'][1])
-        self.indicatorFunctions['Nitrogênio-Nitrato'] = lambda x: np.interp(x, self.indicators['Nitrogênio-Nitrato'][0], self.indicators['Nitrogênio-Nitrato'][1])
-        self.indicatorFunctions['Fósforo Total'] = lambda x: np.interp(x, self.indicators['Fósforo Total'][0], self.indicators['Fósforo Total'][1])
+        self.indicatorFunctions['Coliformes Termotolerantes'] = lambda x: np.interp(x, self.indicators['Coliformes Termotolerantes'][0], self.indicators['Coliformes Termotolerantes'][1]) if x <= 1e5 else 3 
+        self.indicatorFunctions['pH'] = lambda x: np.interp(x, self.indicators['pH'][0], self.indicators['pH'][1]) 
+        self.indicatorFunctions['DBO (5, 20)'] = lambda x: np.interp(x, self.indicators['DBO (5, 20)'][0], self.indicators['DBO (5, 20)'][1]) if x <= 30 else 2
+        self.indicatorFunctions['Nitrogênio-Nitrato'] = lambda x: np.interp(x, self.indicators['Nitrogênio-Nitrato'][0], self.indicators['Nitrogênio-Nitrato'][1]) if x <= 100 else 1
+        self.indicatorFunctions['Fósforo Total'] = lambda x: np.interp(x, self.indicators['Fósforo Total'][0], self.indicators['Fósforo Total'][1]) if x <= 10 else 1
         self.indicatorFunctions['Temperatura da Água'] = lambda x: np.interp(x, self.indicators['Temperatura da Água'][0], self.indicators['Temperatura da Água'][1])
-        self.indicatorFunctions['Turbidez'] = lambda x: np.interp(x, self.indicators['Turbidez'][0], self.indicators['Turbidez'][1])
-        self.indicatorFunctions['Sólido Dissolvido Total'] = lambda x: np.interp(x, self.indicators['Sólido Dissolvido Total'][0], self.indicators['Sólido Dissolvido Total'][1])
-        self.indicatorFunctions['Oxigênio Dissolvido'] = lambda x: np.interp(x, self.indicators['Oxigênio Dissolvido'][0], self.indicators['Oxigênio Dissolvido'][1])
+        self.indicatorFunctions['Turbidez'] = lambda x: np.interp(x, self.indicators['Turbidez'][0], self.indicators['Turbidez'][1]) if x <= 100 else 5
+        self.indicatorFunctions['Sólido Dissolvido Total'] = lambda x: np.interp(x, self.indicators['Sólido Dissolvido Total'][0], self.indicators['Sólido Dissolvido Total'][1]) if x <= 500 else 32
+        self.indicatorFunctions['Oxigênio Dissolvido'] = lambda x: np.interp(x, self.indicators['Oxigênio Dissolvido'][0], self.indicators['Oxigênio Dissolvido'][1]) if x <= 140 else 47
         self.indicatorList = list(self.indicators.keys())
         self.indicatorWeights = {a:b for a,b in zip(self.indicatorList, [0.15, 0.12, 0.1, 0.1, 0.1, 0.1, 0.08, 0.08, 0.17])}
        
@@ -46,7 +46,7 @@ class IQA_Interpolator():
 
 def main():
     Interpolator = IQA_Interpolator()
-    print(Interpolator.IQA_Result({'Coliformes Termotolerantes':5, 'pH':7, 'DBO (5, 20)':2, 'Temperatura da Água':0, 'Turbidez':10, 'Nitrogênio-Nitrato':0, 'Fósforo Total': 0, 'Sólido Dissolvido Total': 50, 'Oxigênio Dissolvido':100}))
+    print(Interpolator.IQA_Result({'Coliformes Termotolerantes': 14000.0, 'pH': 6.2, 'DBO (5, 20)': 4.0, 'Temperatura da Água': 25.0, 'Turbidez': 40.0, 'Nitrogênio-Nitrato': 0.16, 'Fósforo Total': 0.155, 'Sólido Dissolvido Total': 142.0, 'Oxigênio Dissolvido': 1.2}))
     print(Interpolator.indicatorWeights)
 if __name__ == "__main__":
     main()
