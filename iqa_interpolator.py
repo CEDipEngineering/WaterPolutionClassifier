@@ -22,18 +22,18 @@ class IQA_Interpolator():
         self.indicators["residuo"] = pd.read_csv('csv_iqa/residuo.csv', delimiter=',', decimal='.', header=None)
         self.indicators["O2"] = pd.read_csv('csv_iqa/o2dissolvido.csv', delimiter=',', decimal='.', header=None)
         self.indicatorFunctions = {}
-        self.indicatorFunctions["coliformes"] = lambda x: np.interp(value, self.indicators["coliformes"][0], self.indicators["coliformes"][1])
-        self.indicatorFunctions["PH"] = lambda x: np.interp(value, self.indicators["PH"][0], self.indicators["PH"][1])
-        self.indicatorFunctions["dbo"] = lambda x: np.interp(value, self.indicators["dbo"][0], self.indicators["dbo"][1])
-        self.indicatorFunctions["N2"] = lambda x: np.interp(value, self.indicators["N2"][0], self.indicators["N2"][1])
-        self.indicatorFunctions["P"] = lambda x: np.interp(value, self.indicators["P"][0], self.indicators["P"][1])
-        self.indicatorFunctions["temp"] = lambda x: np.interp(value, self.indicators["temp"][0], self.indicators["temp"][1])
-        self.indicatorFunctions["turbidez"] = lambda x: np.interp(value, self.indicators["turbidez"][0], self.indicators["turbidez"][1])
-        self.indicatorFunctions["residuo"] = lambda x: np.interp(value, self.indicators["residuo"][0], self.indicators["residuo"][1])
-        self.indicatorFunctions["O2"] = lambda x: np.interp(value, self.indicators["O2"][0], self.indicators["O2"][1])
+        self.indicatorFunctions["coliformes"] = lambda x: np.interp(x, self.indicators["coliformes"][0], self.indicators["coliformes"][1])
+        self.indicatorFunctions["PH"] = lambda x: np.interp(x, self.indicators["PH"][0], self.indicators["PH"][1])
+        self.indicatorFunctions["dbo"] = lambda x: np.interp(x, self.indicators["dbo"][0], self.indicators["dbo"][1])
+        self.indicatorFunctions["N2"] = lambda x: np.interp(x, self.indicators["N2"][0], self.indicators["N2"][1])
+        self.indicatorFunctions["P"] = lambda x: np.interp(x, self.indicators["P"][0], self.indicators["P"][1])
+        self.indicatorFunctions["temp"] = lambda x: np.interp(x, self.indicators["temp"][0], self.indicators["temp"][1])
+        self.indicatorFunctions["turbidez"] = lambda x: np.interp(x, self.indicators["turbidez"][0], self.indicators["turbidez"][1])
+        self.indicatorFunctions["residuo"] = lambda x: np.interp(x, self.indicators["residuo"][0], self.indicators["residuo"][1])
+        self.indicatorFunctions["O2"] = lambda x: np.interp(x, self.indicators["O2"][0], self.indicators["O2"][1])
         self.indicatorList = list(self.indicators.keys())
-        self.indicatorWeights = dict(keys=self.indicatorList, values=range(1,10))
-
+        self.indicatorWeights = {a:b for a,b in zip(self.indicatorList, [0.15, 0.12, 0.1, 0.1, 0.1, 0.1, 0.08, 0.08, 0.17])}
+       
     def IQA_Result(self, valuesDict: dict):
         keys = valuesDict.keys()
         result = 1
@@ -41,3 +41,11 @@ class IQA_Interpolator():
             if key in self.indicatorList:
                 result*= self.indicatorFunctions[key](valuesDict[key])**self.indicatorWeights[key]
         return result
+
+
+def main():
+    Interpolator = IQA_Interpolator()
+    print(Interpolator.IQA_Result({'coliformes':5,'PH':7,'dbo':2, 'temp':0, 'turbidez':10, 'N2':0, 'P': 0, 'residuo': 50, 'O2':100}))
+    print(Interpolator.indicatorWeights)
+if __name__ == "__main__":
+    main()
