@@ -45,7 +45,7 @@ class IQA_Interpolator():
 
 def main():
     Interpolator = IQA_Interpolator()
-    print(Interpolator.IQA_Result({'coliformes':5,'PH':7,'dbo':2, 'temp':0, 'turbidez':10, 'N2':0, 'P': 0, 'residuo': 50, 'O2':100}))
+    print(Interpolator.IQA_Result({'coliformes':5,'PH':7,'dbo':2, 'temp':25, 'turbidez':10, 'N2':0, 'P': 0, 'residuo': 50, 'O2':100}))
     print(Interpolator.indicatorWeights)
 if __name__ == "__main__":
     main()
